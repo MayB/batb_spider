@@ -111,10 +111,8 @@ class bdtb:
         finally:
             print '写入完毕'
             
-        
+#需要爬虫的链接地址        
 baseUrl = 'http://tieba.baidu.com/p/3138733512'
+#新建爬虫类
 BDTB = bdtb(baseUrl, 1)
-#BDTB.getPage(1)
-#BDTB.getTitle()
-#BDTB.getPageNum()
 BDTB.start()
