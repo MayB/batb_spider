@@ -3,6 +3,7 @@ import urllib
 import urllib2
 import re
 
+#帮助类
 class Tool:
     #删除img标签,7位长空格
     removeImg = re.compile('<img.*?>| {7}|')
@@ -34,7 +35,7 @@ class bdtb:
     #构造函数，传入baseUrl和seeLz确定是否查看楼主
     def __init__(self, baseUrl, seeLz):
         self.baseUrl = baseUrl
-        self.seeLz = '?see_lz='+str(seeLz)
+        self.seeLz = '?see_lz=' + str(seeLz)
         self.tool = Tool()
         self.file = None
         self.floor = 1
@@ -67,7 +68,7 @@ class bdtb:
             return result.group(1).strip()
         else:
             return None
-    #获取每层楼neirong
+    #获取每层楼内容
     def getContent(self,page):
         pattern = re.compile('<div id="post_content_.*?>(.*?)</div>', re.S)
         results = re.findall(pattern,page)
@@ -85,7 +86,7 @@ class bdtb:
             
     def writeData2File(self, contents):
         for item in contents:
-            floorline = "\n" + str(self.floor) + u"----------------------------------------------------------------------------------------------------------------------------------------\n"
+            floorline = "\n" + str(self.floor) + u"----------------------------------------------------------------------------------------------------------------------------------\n"
             self.file.write(floorline)
             self.file.write(item)
             self.floor += 1
