@@ -2,6 +2,7 @@
 import urllib
 import urllib2
 import re
+import MySQLdb
 
 #帮助类
 class Tool:
@@ -90,16 +91,22 @@ class bdtb:
             self.file.write(floorline)
             self.file.write(item)
             self.floor += 1
+    def openDB(self):
+        try:
+            conn = MySQLdb.connect('localhost','root','root','test',3306)
+            return conn
+        except MySQLdb.Error,e:
+            print "Mysql Error %d: %s" % (e.args[0], e.args[1])
     #添加写数据库方法
-    def write2DB(self,conn, sub_item):
+    def write2DB(self,conn, value1,value2):
         try:
             cur=conn.cursor()
-            value = [sub_item]
+            value = [value1,value2]
             conn.set_character_set('utf8')
             cur.execute('SET NAMES utf8;')
             cur.execute('SET CHARACTER SET utf8;')
             cur.execute('SET character_set_connection=utf8;')
-            cur.execute('insert into test(foodname) values(%s)',value)
+            cur.execute('insert into test(value1,value2) values(%s,%s)',value)
         except MySQLdb.Error,e:
             print "Mysql Error %d: %s" % (e.args[0], e.args[1])
 
@@ -108,6 +115,7 @@ class bdtb:
         pageNum = self.getPageNum(indexPage)
         title = self.getTitle(indexPage)
         self.setFileTitle(title)
+        conn = self.openDB()
         if pageNum == None:
             print "url已经失效"
             return
@@ -117,10 +125,12 @@ class bdtb:
                 print "正在写第" + str(i) + "页数据"
                 page= self.getPage(i)
                 contents = self.getContent(page)
+                self.write2DB(conn,pageNum,contents)
                 self.writeData2File(contents)
         except IOError,e:
             print '写入异常'+ e.message
         finally:
+            conn.close()
             print '写入完毕'
             
 #需要爬虫的链接地址        
