@@ -90,6 +90,18 @@ class bdtb:
             self.file.write(floorline)
             self.file.write(item)
             self.floor += 1
+    #添加写数据库方法
+    def write2DB(self,conn, sub_item):
+        try:
+            cur=conn.cursor()
+            value = [sub_item]
+            conn.set_character_set('utf8')
+            cur.execute('SET NAMES utf8;')
+            cur.execute('SET CHARACTER SET utf8;')
+            cur.execute('SET character_set_connection=utf8;')
+            cur.execute('insert into test(foodname) values(%s)',value)
+        except MySQLdb.Error,e:
+            print "Mysql Error %d: %s" % (e.args[0], e.args[1])
 
     def start(self):
         indexPage = self.getPage(1)
